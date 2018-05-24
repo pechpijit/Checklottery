@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
@@ -21,10 +22,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -40,8 +37,10 @@ import mobi.letsplay.checklottery.helper.BaseActivity;
 
 import static io.realm.internal.SyncObjectServerFacade.getApplicationContext;
 
-public class HomeActivity extends BaseActivity {
+import com.facebook.ads.*;
 
+public class HomeActivity extends BaseActivity {
+    String TAG = "HomeActivity";
     ViewPager viewPager;
     TabLayout tabLayout;
     LinearLayout bottomBar;
@@ -50,7 +49,7 @@ public class HomeActivity extends BaseActivity {
     public FloatingActionButton btnCheckNumber;
     public CardView btnNumSort;
     public CardView btnFront3, btnLast3,btnLast2;
-
+    private AdView adView;
 
     String lottery = "357 130 980 527 273 654 787 131 720 064 318 870 007 388 106 947 624 799 495 373 616 836 626 303 961 831 165 425 180 971 726 611 172 647 345 679 115 302 061 386 835 584 226 489 626 878 121 218 008 396 949 573 766 973 057 020 918 324 560 450 464 128 066 807 511 663 890 304 596 366 513 873 682 040 976 824 885 692 194 280 583 493 335 334 966 366 538 983 734 552 169 609 804 251 111 775 975 382 238 403 228 008 546 390 877 855 530 426 699 312 625 999 532 031 264 246 140 250 238 181 241 028 106 757 457 134 175 918 435 209 260 403";
 
@@ -58,7 +57,7 @@ public class HomeActivity extends BaseActivity {
     TextView txtTitle;
     public ImageView imgRefrash;
     public ImageView imgShare;
-    private AdView mAdView;
+
 
     private int[] tabIcons = {
             R.drawable.baseline_list_alt_white_48,
@@ -70,13 +69,14 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        MobileAds.initialize(this, getString(R.string.YOUR_ADMOB_APP_ID));
         setContentView(R.layout.activity_tab_animation);
 //        setFront3();
+                AdSettings.addTestDevice("nSJfQlWIoVXArTU6aycvNhGY5IA=");
+
         toolbar = findViewById(R.id.tabanim_toolbar);
         setSupportActionBar(toolbar);
 
-        setAdmob();
+        setAds();
 
         bottomBar = findViewById(R.id.bottomBar);
         bottomBarStat = findViewById(R.id.bottomBarStat);
@@ -115,43 +115,45 @@ public class HomeActivity extends BaseActivity {
         setTabListener();
     }
 
-    private void setAdmob() {
-        mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.setAdListener(new AdListener() {
+    private void setAds() {
+        // Instantiate an AdView view
+        adView = new AdView(this, getString(R.string.YOUR_PLACEMENT_ID), AdSize.BANNER_HEIGHT_50);
+
+        // Find the Ad Container
+        LinearLayout adContainer = (LinearLayout) findViewById(R.id.banner_container);
+
+        // Add the ad view to your activity layout
+        adContainer.addView(adView);
+
+        adView.setAdListener(new AdListener() {
             @Override
-            public void onAdLoaded() {
-                // Code to be executed when an ad finishes loading.
-                Toast.makeText(HomeActivity.this, "onAdLoaded", Toast.LENGTH_SHORT).show();
+            public void onError(Ad ad, AdError adError) {
+                // Ad error callback
+                Toast.makeText(HomeActivity.this, "Error: " + adError.getErrorMessage(),
+                        Toast.LENGTH_LONG).show();
+                Log.d(TAG, "Error : " + adError.getErrorCode());
+                Log.d(TAG, "Error : " + adError.getErrorMessage());
             }
 
             @Override
-            public void onAdFailedToLoad(int errorCode) {
-                // Code to be executed when an ad request fails.
-                Toast.makeText(HomeActivity.this, "errorCode : "+errorCode, Toast.LENGTH_SHORT).show();
+            public void onAdLoaded(Ad ad) {
+                // Ad loaded callback
+
             }
 
             @Override
-            public void onAdOpened() {
-                // Code to be executed when an ad opens an overlay that
-                // covers the screen.
-                Toast.makeText(HomeActivity.this, "onAdOpened", Toast.LENGTH_SHORT).show();
+            public void onAdClicked(Ad ad) {
+                // Ad clicked callback
             }
 
             @Override
-            public void onAdLeftApplication() {
-                // Code to be executed when the user has left the app.
-                Toast.makeText(HomeActivity.this, "onAdLeftApplication", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onAdClosed() {
-                // Code to be executed when when the user is about to return
-                // to the app after tapping on an ad.
-                Toast.makeText(HomeActivity.this, "onAdClosed", Toast.LENGTH_SHORT).show();
+            public void onLoggingImpression(Ad ad) {
+                // Ad impression logged callback
             }
         });
-        mAdView.loadAd(adRequest);
+
+        // Request an ad
+        adView.loadAd();
     }
 
     private void setTabListener() {
@@ -325,6 +327,14 @@ public class HomeActivity extends BaseActivity {
             database.child(arrFront3[i]).setValue(list);
             list.clear();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (adView != null) {
+            adView.destroy();
+        }
+        super.onDestroy();
     }
 
 }

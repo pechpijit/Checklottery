@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">ตรวจหวย</string>
     <string name="YOUR_PLACEMENT_ID">818785894958013_920510281452240</string>
-    <string name="YOUR_ADMOB_APP_ID">ca-app-pub-2293585083861537/3575500409</string>
+    <!--<string name="YOUR_ADMOB_APP_ID">ca-app-pub-2293585083861537/3575500409</string>-->
     <!--<string name="YOUR_ADMOB_APP_ID">ca-app-pub-3940256099942544/6300978111</string>-->
 
     <string name="tab_name_1">ผลสลาก</string>

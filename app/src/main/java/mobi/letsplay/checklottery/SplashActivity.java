@@ -78,7 +78,7 @@ public class SplashActivity extends BaseActivity {
                     public void run() {
                         facebookAds();
                     }
-                }, 3000);
+                }, 2000);
     }
 
     private void facebookAds() {
