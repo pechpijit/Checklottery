@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">ตรวจหวย</string>
+    <string name="YOUR_PLACEMENT_ID">818785894958013_920510281452240</string>
+    <string name="YOUR_ADMOB_APP_ID">ca-app-pub-2293585083861537/3575500409</string>
+    <!--<string name="YOUR_ADMOB_APP_ID">ca-app-pub-3940256099942544/6300978111</string>-->
+
+    <string name="tab_name_1">ผลสลาก</string>
+    <string name="tab_name_2">ประวัติการตรวจผลรางวัล</string>
+    <string name="tab_name_3">สถิติการออกรางวัล</string>
+    <string name="tab_name_4">เกี่ยวกับแอปพลิเคชัน</string>
+
+    <string name="tab_bottom_1">เรียงเบอร์</string>
+    <string name="tab_bottom_2">ตรวจหวย</string>
+
+    <string name="reward1">รางวัลที่ 1</string>
+    <string name="reward2">รางวัลที่ 2</string>
+    <string name="reward3">รางวัลที่ 3</string>
+    <string name="reward4">รางวัลที่ 4</string>
+    <string name="reward5">รางวัลที่ 5</string>
+
+    <string name="rewardFront3">เลขหน้า 3 ตัว</string>
+    <string name="rewardLast3">เลขท้าย 3 ตัว</string>
+    <string name="rewardLast2">เลขท้าย 2 ตัว</string>
+    <string name="reward1Close">รางวัลข้างเคียงรางวัลที่ 1</string>
+    <string name="title_activity_check_lottery">ตรวจสอบผลรางวัล</string>
+    <string name="title_activity_sort_number">เรียงเบอร์ตรวจสอบผลรางวัล</string>
+
+    <string name="title_activity_scan_qrcode">แสกนผลสลากด้วยคิวอาร์โค้ด</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="facebook_app_id">818785894958013</string>
+    <string name="fb_login_protocol_scheme">fb818785894958013</string>
+</resources>

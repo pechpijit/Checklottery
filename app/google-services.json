@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "948094719565",
+    "firebase_url": "https://lottery-apps.firebaseio.com",
+    "project_id": "lottery-apps",
+    "storage_bucket": "lottery-apps.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:948094719565:android:26ccac4c384b9a08",
+        "android_client_info": {
+          "package_name": "mobi.letsplay.checklottery"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "948094719565-bt6llgn56pqvn535nkq7vkmp8iu4c212.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "948094719565-bt6llgn56pqvn535nkq7vkmp8iu4c212.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD51_mGjfr0XwG1gLXHAMr2CrmUtSbJurw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

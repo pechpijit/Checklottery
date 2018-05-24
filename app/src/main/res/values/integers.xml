@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="money_reward1">6000000</integer>
+    <integer name="money_reward2">200000</integer>
+    <integer name="money_reward3">80000</integer>
+    <integer name="money_reward4">40000</integer>
+    <integer name="money_reward5">20000</integer>
+    <integer name="money_rewardFront3_1">4000</integer>
+    <integer name="money_rewardFront3_2">4000</integer>
+    <integer name="money_rewardLast3_1">4000</integer>
+    <integer name="money_rewardLast3_2">4000</integer>
+    <integer name="money_rewardLast2">2000</integer>
+    <integer name="money_reward1Close_1">100000</integer>
+    <integer name="money_reward1Close_2">100000</integer>
+</resources>
