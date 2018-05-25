@@ -11,6 +11,10 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 
 import java.util.ArrayList;
@@ -152,12 +156,22 @@ public class HistoryFragment extends Fragment {
     }
 
     private void deleteRow(final RealmResults<CheckLotteryModel> results, final int position) {
+        int id = results.get(position).getId();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user != null) {
+            DatabaseReference database = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).child("history").child(String.valueOf(id));
+            database.removeValue();
+        }
+
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 results.get(position).deleteFromRealm();
             }
         });
+
+
     }
 
     @Override
@@ -171,6 +185,8 @@ public class HistoryFragment extends Fragment {
         super.onStop();
         realm.close();
     }
+
+
 
 }
 

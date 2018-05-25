@@ -42,8 +42,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal"
-            android:layout_marginTop="30dp"
             android:padding="5dp">
 
             <android.support.v7.widget.AppCompatButton
@@ -109,6 +109,28 @@
                 android:textSize="18sp"
                 android:textStyle="bold" />
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/adsRemove"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/ic_premiumr"
+            android:layout_marginLeft="60dp"
+            android:layout_marginRight="60dp"/>
+
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/login_facebook"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:visibility="invisible"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:layout_marginLeft="65dp"
+            android:layout_marginRight="65dp"/>
 
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

@@ -45,6 +45,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import org.json.JSONObject;
 
 import mobi.letsplay.checklottery.helper.BaseActivity;
+import mobi.letsplay.checklottery.helper.PrefUtils;
 import mobi.letsplay.checklottery.model.UserModel;
 
 public class SplashActivity extends BaseActivity {
@@ -76,7 +77,13 @@ public class SplashActivity extends BaseActivity {
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
-                        facebookAds();
+                        PrefUtils utils = new PrefUtils(SplashActivity.this);
+                        if (!utils.getPurchase()) {
+                            facebookAds();
+                        } else {
+                            progressBar.setVisibility(View.INVISIBLE);
+                            showViewLogin();
+                        }
                     }
                 }, 2000);
     }
@@ -185,7 +192,6 @@ public class SplashActivity extends BaseActivity {
     private void handleFacebookAccessToken(final AccessToken token, final String email) {
         Log.d(TAG, "handleFacebookAccessToken:" + token);
         showProgressDialog("กำลังเข้าสู่ระบบ");
-
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -193,13 +199,10 @@ public class SplashActivity extends BaseActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "handleFacebookAccessToken:success");
-                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                            DatabaseReference database = FirebaseDatabase.getInstance().getReference();
                             UserModel userProfile = new UserModel();
                             userProfile.setEmail(email);
-
-                            DatabaseReference database = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getUid());
-                            database.setValue(user.getEmail());
-                            Log.d(TAG, "email " + email);
+                            database.child("Users").child(mAuth.getUid()).setValue(userProfile);
                             onSocialLoginSuccess();
                         } else if (task.getException() instanceof FirebaseNetworkException) {
                             Log.d(TAG, "handleFacebookAccessToken:FirebaseNetworkException");
@@ -215,6 +218,13 @@ public class SplashActivity extends BaseActivity {
     }
 
     private void onSocialLoginSuccess() {
+        PrefUtils prefUtils = new PrefUtils(this);
+
+        if (prefUtils.getPurchase()) {
+            DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            database.child("Users").child(user.getUid()).child("purchase").setValue("1");
+        }
 
         startActivity(new Intent(SplashActivity.this, HomeActivity.class));
         finish();

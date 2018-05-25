@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -53,6 +55,9 @@ public class CheckLotteryActivity extends BaseActivity {
     String date;
     EditText input_number;
     String number;
+    CheckLotteryModel model;
+
+    int nextId;
 
     @Override
     public void onBackPressed() {
@@ -413,8 +418,7 @@ public class CheckLotteryActivity extends BaseActivity {
                     @Override
                     public void execute(Realm realm) {
                         Number maxId = realm.where(CheckLotteryModel.class).max("Id");
-                        int nextId = (maxId == null) ? 1 : maxId.intValue() + 1;
-                        CheckLotteryModel model = new CheckLotteryModel();
+                        nextId = (maxId == null) ? 1 : maxId.intValue() + 1;
                         model.setId(nextId);
                         model.setLottery(number);
                         model.setDetail(textDetail);
@@ -424,6 +428,15 @@ public class CheckLotteryActivity extends BaseActivity {
                     }
                 });
         realm.commitTransaction();
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user != null) {
+            DatabaseReference database = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).child("history").child(String.valueOf(nextId));
+            database.setValue(model);
+        }
+
+
     }
 
     @Override
