@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package mobi.letsplay.checklottery.helper;
+package mobi.letsplay.checklottery.utils;
 
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -518,7 +518,19 @@ public class IabHelper {
         return queryInventory(querySkuDetails, moreSkus, null);
     }
 
-
+    /**
+     * Queries the inventory. This will query all owned items from the server, as well as
+     * information on additional skus, if specified. This method may block or take long to execute.
+     * Do not call from a UI thread. For that, use the non-blocking version {@link #refreshInventoryAsync}.
+     *
+     * @param querySkuDetails if true, SKU details (price, description, etc) will be queried as well
+     *                        as purchase information.
+     * @param moreItemSkus    additional PRODUCT skus to query information on, regardless of ownership.
+     *                        Ignored if null or if querySkuDetails is false.
+     * @param moreSubsSkus    additional SUBSCRIPTIONS skus to query information on, regardless of ownership.
+     *                        Ignored if null or if querySkuDetails is false.
+     * @throws IabException if a problem occurs while refreshing the inventory.
+     */
     public Inventory queryInventory(boolean querySkuDetails, List<String> moreItemSkus,
                                     List<String> moreSubsSkus) throws IabException {
         checkNotDisposed();
@@ -708,7 +720,12 @@ public class IabHelper {
         consumeAsyncInternal(purchases, listener, null);
     }
 
-
+    /**
+     * Same as {@link consumeAsync}, but for multiple items at once.
+     *
+     * @param purchases The list of PurchaseInfo objects representing the purchases to consume.
+     * @param listener  The listener to notify when the consumption operation finishes.
+     */
     public void consumeAsync(List<Purchase> purchases, OnConsumeMultiFinishedListener listener) {
         checkNotDisposed();
         checkSetupDone("consume");

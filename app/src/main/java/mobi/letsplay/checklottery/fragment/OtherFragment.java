@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -18,39 +17,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
 import com.facebook.appevents.AppEventsLogger;
-import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseNetworkException;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import org.json.JSONObject;
-
 import mobi.letsplay.checklottery.HomeActivity;
 import mobi.letsplay.checklottery.R;
-import mobi.letsplay.checklottery.SplashActivity;
-import mobi.letsplay.checklottery.helper.IabHelper;
-import mobi.letsplay.checklottery.helper.IabResult;
-import mobi.letsplay.checklottery.helper.Inventory;
 import mobi.letsplay.checklottery.helper.PrefUtils;
-import mobi.letsplay.checklottery.helper.Purchase;
-import mobi.letsplay.checklottery.helper.SkuDetails;
-import mobi.letsplay.checklottery.model.UserModel;
+import mobi.letsplay.checklottery.utils.IabHelper;
+import mobi.letsplay.checklottery.utils.IabResult;
+import mobi.letsplay.checklottery.utils.Inventory;
+import mobi.letsplay.checklottery.utils.Purchase;
+import mobi.letsplay.checklottery.utils.SkuDetails;
 
 public class OtherFragment extends Fragment {
     String TAG = "OtherFragment";
@@ -63,8 +45,6 @@ public class OtherFragment extends Fragment {
     private Purchase purchaseOwned;
     private ImageView adsRemove;
     LoginButton loginButton;
-    private CallbackManager mCallbackManagerFB;
-    private FirebaseAuth mAuth;
 
     public OtherFragment() {
     }
@@ -80,10 +60,9 @@ public class OtherFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_other, container, false);
         FacebookSdk.sdkInitialize(getActivity());
         AppEventsLogger.activateApp(getActivity());
-        mAuth = FirebaseAuth.getInstance();
 
         mHelper = new IabHelper(getContext(), base64PublicKey);
-        mHelper.enableDebugLogging(true);
+        mHelper.enableDebugLogging(true,TAG);
 
         mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
             @Override

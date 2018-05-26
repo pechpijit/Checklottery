@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package mobi.letsplay.checklottery.helper;
+package mobi.letsplay.checklottery.utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;

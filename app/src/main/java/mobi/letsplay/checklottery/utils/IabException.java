@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package mobi.letsplay.checklottery.helper;
+package mobi.letsplay.checklottery.utils;
 
 /**
  * Exception thrown when something went wrong with in-app billing.

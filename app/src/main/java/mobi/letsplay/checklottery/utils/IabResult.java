@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package mobi.letsplay.checklottery.helper;
+package mobi.letsplay.checklottery.utils;
 
 /**
  * Represents the result of an in-app billing operation.

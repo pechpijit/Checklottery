@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package mobi.letsplay.checklottery.helper;
+package mobi.letsplay.checklottery.utils;
 
 /**
  * Exception thrown when encountering an invalid Base64 input character.

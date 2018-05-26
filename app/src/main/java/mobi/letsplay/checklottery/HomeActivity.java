@@ -392,7 +392,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     public void setFacebookLogin(final LoginButton loginButton) {
-        loginButton.setVisibility(View.VISIBLE);
+//        loginButton.setVisibility(View.VISIBLE);
         loginButton.setReadPermissions("email", "public_profile");
         mCallbackManagerFB = CallbackManager.Factory.create();
         loginButton.registerCallback(mCallbackManagerFB, new FacebookCallback<LoginResult>() {
@@ -462,11 +462,14 @@ public class HomeActivity extends BaseActivity {
         Toast.makeText(this, "เข้าสู่ระบบสำเร็จแล้ว", Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mCallbackManagerFB.onActivityResult(requestCode, resultCode, data);
-        super.onActivityResult(requestCode, resultCode, data);
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (mCallbackManagerFB != null) {
+//                mCallbackManagerFB.onActivityResult(requestCode, resultCode, data);
+//        }
+//
+//        super.onActivityResult(requestCode, resultCode, data);
+//    }
 
 
 }
