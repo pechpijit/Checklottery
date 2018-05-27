@@ -36,6 +36,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import io.realm.Realm;
 import mobi.letsplay.checklottery.helper.AppStatus;
@@ -378,7 +379,6 @@ public class CheckLotteryActivity extends BaseActivity {
             insertHistoryCheckLottery(number,textDetail.toString(),0,currentDateandTime);
             failCheckLottery();
         }
-
         input_number.setText("");
     }
 
@@ -417,26 +417,28 @@ public class CheckLotteryActivity extends BaseActivity {
                 new Realm.Transaction() {
                     @Override
                     public void execute(Realm realm) {
-                        Number maxId = realm.where(CheckLotteryModel.class).max("Id");
-                        nextId = (maxId == null) ? 1 : maxId.intValue() + 1;
-                        model.setId(nextId);
+                        String id = UUID.randomUUID().toString();
+                        CheckLotteryModel model = realm.createObject(CheckLotteryModel.class, id);
                         model.setLottery(number);
                         model.setDetail(textDetail);
                         model.setStatus(type);
                         model.setDateTime(DateandTime);
+
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+                        if (user != null) {
+                            DatabaseReference database = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).child("history").child(id);
+                            database.child("Id").setValue(id);
+                            database.child("lottery").setValue(number);
+                            database.child("status").setValue(type);
+                            database.child("Detail").setValue(textDetail);
+                            database.child("DateTime").setValue(DateandTime);
+                        }
+
                         realm.insertOrUpdate(model);
                     }
                 });
         realm.commitTransaction();
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        if (user != null) {
-            DatabaseReference database = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).child("history").child(String.valueOf(nextId));
-            database.setValue(model);
-        }
-
-
     }
 
     @Override

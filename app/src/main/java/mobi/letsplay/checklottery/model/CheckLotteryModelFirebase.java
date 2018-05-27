@@ -1,31 +1,25 @@
 package mobi.letsplay.checklottery.model;
 
+import com.google.firebase.database.IgnoreExtraProperties;
+
 import io.realm.RealmObject;
 import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
 
-public class CheckLotteryModel extends RealmObject{
-    @PrimaryKey
-    private String Id;
-
-    @Required
+@IgnoreExtraProperties
+public class CheckLotteryModelFirebase{
+    private Long Id;
     private String lottery;
-
-    @Required
     private String detail;
-
-    private int typ;
-
-    @Index
+    private Long typ;
     private String DateTime;
 
-
-    public String getId() {
+    public Long getId() {
         return Id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         Id = id;
     }
 
@@ -45,11 +39,11 @@ public class CheckLotteryModel extends RealmObject{
         this.detail = detail;
     }
 
-    public int getStatus() {
+    public Long getStatus() {
         return typ;
     }
 
-    public void setStatus(int typ) {
+    public void setStatus(Long typ) {
         this.typ = typ;
     }
 

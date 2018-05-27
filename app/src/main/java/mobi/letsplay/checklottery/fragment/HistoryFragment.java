@@ -156,7 +156,7 @@ public class HistoryFragment extends Fragment {
     }
 
     private void deleteRow(final RealmResults<CheckLotteryModel> results, final int position) {
-        int id = results.get(position).getId();
+        String id = results.get(position).getId();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         if (user != null) {

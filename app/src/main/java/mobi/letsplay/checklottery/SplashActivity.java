@@ -5,20 +5,18 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.UUID;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -39,13 +37,22 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONObject;
 
+import io.realm.Realm;
+import io.realm.RealmAsyncTask;
+import io.realm.RealmResults;
+import io.realm.Sort;
 import mobi.letsplay.checklottery.helper.BaseActivity;
 import mobi.letsplay.checklottery.helper.PrefUtils;
+import mobi.letsplay.checklottery.model.CheckLotteryModel;
+import mobi.letsplay.checklottery.model.CheckLotteryModelFirebase;
 import mobi.letsplay.checklottery.model.UserModel;
 
 public class SplashActivity extends BaseActivity {
@@ -144,7 +151,7 @@ public class SplashActivity extends BaseActivity {
                 public void onClick(View v) {
                     startActivity(new Intent(SplashActivity.this, HomeActivity.class));
                     finish();
-                    overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
+                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                 }
             });
 
@@ -200,9 +207,7 @@ public class SplashActivity extends BaseActivity {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "handleFacebookAccessToken:success");
                             DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-                            UserModel userProfile = new UserModel();
-                            userProfile.setEmail(email);
-                            database.child("Users").child(mAuth.getUid()).setValue(userProfile);
+                            database.child("Users").child(mAuth.getUid()).child("email").setValue(email);
                             onSocialLoginSuccess();
                         } else if (task.getException() instanceof FirebaseNetworkException) {
                             Log.d(TAG, "handleFacebookAccessToken:FirebaseNetworkException");
@@ -223,12 +228,81 @@ public class SplashActivity extends BaseActivity {
         if (prefUtils.getPurchase()) {
             DatabaseReference database = FirebaseDatabase.getInstance().getReference();
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            database.child("Users").child(user.getUid()).child("purchase").setValue("1");
+            if (user != null) {
+                database.child("Users").child(user.getUid()).child("purchase").setValue("1");
+            }
         }
 
-        startActivity(new Intent(SplashActivity.this, HomeActivity.class));
-        finish();
-        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            final DatabaseReference database = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).child("history");
+            database.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    ArrayList<CheckLotteryModel> keyDate = new ArrayList<CheckLotteryModel>();
+                    for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
+                        String date = childDataSnapshot.child("DateTime").getValue(String.class);
+                        String detail = childDataSnapshot.child("Detail").getValue(String.class);
+                        String id = childDataSnapshot.child("Id").getValue(String.class);
+                        String lottery = childDataSnapshot.child("lottery").getValue(String.class);
+                        Long status = childDataSnapshot.child("status").getValue(Long.class);
+
+                        CheckLotteryModel firebase = new CheckLotteryModel();
+                        firebase.setDateTime(date);
+                        firebase.setDetail(detail);
+                        firebase.setId(id);
+                        firebase.setLottery(lottery);
+                        firebase.setStatus(status.intValue());
+                        keyDate.add(firebase);
+                    }
+
+                    savehistoryrealm(keyDate);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+    }
+
+    private void savehistoryrealm(final ArrayList<CheckLotteryModel> keyDate) {
+        Realm realm = Realm.getDefaultInstance();
+
+        realm.beginTransaction();
+        realm.delete(CheckLotteryModel.class);
+        realm.commitTransaction();
+
+        realm.executeTransactionAsync(
+                new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        for (final CheckLotteryModel s : keyDate) {
+                            CheckLotteryModel model = realm.createObject(CheckLotteryModel.class, UUID.randomUUID().toString());
+                            model.setLottery(s.getLottery());
+                            model.setDetail(s.getDetail());
+                            model.setStatus(s.getStatus());
+                            model.setDateTime(s.getDateTime());
+                        }
+                    }
+                }, new Realm.Transaction.OnSuccess() {
+                    @Override
+                    public void onSuccess() {
+                        Toast.makeText(getApplicationContext(), "Update History Success.", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(SplashActivity.this, HomeActivity.class));
+                        finish();
+                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                    }
+
+                }, new Realm.Transaction.OnError() {
+                    @Override
+                    public void onError(Throwable error) {
+                        error.printStackTrace();
+                        Toast.makeText(getApplicationContext(), "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     @Override
